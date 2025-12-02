@@ -30,7 +30,7 @@ static std::optional<std::vector<std::string>> ReadInputs(std::string_view file)
 
 int main()
 {
-	std::optional<std::vector<std::string>> inputs = ReadInputs("input.txt");
+	const std::optional<std::vector<std::string>> inputs = ReadInputs("input.txt");
 	if (!inputs.has_value())
 	{
 		std::cout << "Inputs are invalid. \n";
