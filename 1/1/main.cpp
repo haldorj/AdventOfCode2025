@@ -42,12 +42,11 @@ int main()
 	int password{ 0 };
 
 	// The dial starts by pointing at 50.
-	int current{50};
-	for (auto& s : inputs.value())
+	int current{ 50 };
+	for (const auto& s : inputs.value())
 	{
 		const char dir = s.at(0);
-		std::string numStr = s.substr(1, s.length());
-		int num = std::stoi(numStr);
+		const int num = std::stoi(s.substr(1));
 
 		if (dir == 'R')
 		{
