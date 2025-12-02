@@ -48,25 +48,23 @@ int main()
 		const char dir = s.at(0);
 		const int num = std::stoi(s.substr(1));
 
-		if (dir == 'R')
+		for (int i = 0; i < num; ++i)
 		{
-			current += num; 
-			while (current > 99)
+			if (dir == 'R')
 			{
-				current -= 100;
+				current++;
+				if (current > 99)
+					current = 0;
 			}
-		}
-		if (dir == 'L')
-		{
-			current -= num;
-			while (current < 0)
+			if (dir == 'L')
 			{
-				current += 100;
+				current--;
+				if (current < 0)
+					current = 99;
 			}
+			if (current == 0)
+				password++;
 		}
-
-		if (current == 0) 
-			password++;
 	}
 
 	std::cout << " The password is: "<< password << " \n";
