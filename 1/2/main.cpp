@@ -32,34 +32,35 @@ static std::optional<std::vector<std::string>> ReadInputs(std::string_view file)
 	return result;
 }
 
-bool repeatedSubstringPattern(std::string s)
+static bool repeatedSubstringPattern(const std::string_view input)
 {
 	std::string current{};
 	bool repeating{};
-	for (const auto& c : s)
+
+	const int inputStringHalfLength = static_cast<int>(input.length() / 2);
+	for (const auto& c : input)
 	{
-		if (repeating)
-			return repeating;
+		if (repeating) 
+			return true;
 
 		current.push_back(c);
-		int l = current.length();
+		const int currentLength = static_cast<int>(current.length());
 
-		if (l > s.length() / 2) return false;
+		if (currentLength > inputStringHalfLength)
+			return false;
 
-		for (int i = l; i < s.length(); i += l)
+		for (int i = currentLength; i < input.length(); i += currentLength)
 		{
-			auto substr = s.substr(i, l);
-
+			const auto substr = input.substr(i, currentLength);
 			if (current != substr)
 			{
 				repeating = false;
 				break;
 			}
-
 			repeating = true;
 		}
 	}
-	return repeating;
+	return false;
 }
 
 int main()
@@ -76,10 +77,9 @@ int main()
 
 		std::stringstream stream(line);
 		std::string temp{};
+
 		while (std::getline(stream, temp, '-')) 
-		{
 			rangeStr.push_back(std::move(temp));
-		}
 
 		if (rangeStr.front().empty() || rangeStr.back().empty())
 			continue;
@@ -91,9 +91,7 @@ int main()
 		{
 			auto current = std::to_string(i);
 			if (repeatedSubstringPattern(current))
-			{
 				invalidIDs.push_back(i);
-			}
 		}
 	}
 
