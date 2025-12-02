@@ -34,19 +34,19 @@ static std::optional<std::vector<std::string>> ReadInputs(std::string_view file)
 
 static bool repeatedSubstringPattern(const std::string_view input)
 {
-	std::string current{};
-	bool repeating{};
-
 	const int inputStringHalfLength = static_cast<int>(input.length() / 2);
+	std::string current{};
+	current.reserve(inputStringHalfLength);
+
+	bool repeating{};
 	for (const auto& c : input)
 	{
-		if (repeating) 
-			return true;
+		if (repeating) return true;
 
 		current.push_back(c);
 		const int currentLength = static_cast<int>(current.length());
 
-		if (currentLength > inputStringHalfLength)
+		if (currentLength > inputStringHalfLength) 
 			return false;
 
 		for (int i = currentLength; i < input.length(); i += currentLength)
