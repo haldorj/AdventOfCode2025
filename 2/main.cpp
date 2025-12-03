@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <utility>
 #include <optional>
 #include <string_view>
 #include <algorithm>
@@ -25,7 +24,7 @@ static std::optional<std::vector<std::string>> ReadInputs(std::string_view file)
 	while (std::getline(inputFile, line, ','))
 	{
 		line.erase(std::ranges::remove(line, '\n').begin(), line.end());
-		result.push_back(std::move(line));
+		result.emplace_back(line);
 	}
 
 	inputFile.close();
@@ -77,9 +76,8 @@ int main()
 
 		std::stringstream stream(line);
 		std::string temp{};
-
 		while (std::getline(stream, temp, '-')) 
-			rangeStr.push_back(std::move(temp));
+			rangeStr.push_back(temp);
 
 		if (rangeStr.front().empty() || rangeStr.back().empty())
 			continue;

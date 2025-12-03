@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <utility>
 #include <optional>
 #include <string_view>
 
@@ -21,7 +20,7 @@ static std::optional<std::vector<std::string>> ReadInputs(std::string_view file)
 	std::string line;
 	while (std::getline(inputFile, line))
 	{
-		result.push_back(std::move(line));
+		result.push_back(line);
 	}
 
 	inputFile.close();

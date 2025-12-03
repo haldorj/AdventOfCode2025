@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <chrono>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -22,7 +23,7 @@ static std::optional<std::vector<std::string>> ReadInputPart1(std::string_view f
 	std::string line;
 	while (std::getline(inputFile, line))
 	{
-		result.push_back(std::move(line));
+		result.push_back(line);
 	}
 
 	inputFile.close();
@@ -44,7 +45,7 @@ static std::optional<std::vector<std::string>> ReadInputPart2(std::string_view f
 	std::string line;
 	while (std::getline(inputFile, line))
 	{
-		result.push_back(std::move(line));
+		result.emplace_back(line);
 	}
 
 	inputFile.close();
@@ -119,7 +120,7 @@ static void PartTwo()
 
 			// start from the next index from the number we just found.
 			startIndex = largest.first + 1;
-			number += static_cast<uint64_t>(largest.second * std::pow(10, maxLength - 1));
+			number += static_cast<uint64_t>(largest.second) * static_cast<uint64_t>(std::pow(10, maxLength - 1));
 			maxLength--;
 		}
 
@@ -133,7 +134,7 @@ static void PartTwo()
 	for (const auto num : result)
 	{
 		sum += num;
-		std::cout << num << "\n";
+		//std::cout << num << "\n";
 	}
 	std::cout << "Result part two: " << sum << "\n";
 }
@@ -141,5 +142,11 @@ static void PartTwo()
 int main()
 {
 	//PartOne();
+
+	auto start_time = std::chrono::high_resolution_clock::now();
 	PartTwo();
+	auto end_time = std::chrono::high_resolution_clock::now();
+	auto duration = end_time - start_time;
+	auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+	std::cout << "Execution time: " << milliseconds << " ms" << std::endl;
 }
