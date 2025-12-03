@@ -32,7 +32,7 @@ static std::optional<std::vector<std::string>> ReadInputs(std::string_view file)
 	return result;
 }
 
-static bool repeatedSubstringPattern(const std::string_view input)
+static bool RepeatedSubstringPattern(const std::string_view input)
 {
 	const int inputStringHalfLength = static_cast<int>(input.length() / 2);
 	std::string current{};
@@ -90,7 +90,7 @@ int main()
 		for (uint64_t i = start; i <= end; ++i)
 		{
 			auto current = std::to_string(i);
-			if (repeatedSubstringPattern(current))
+			if (RepeatedSubstringPattern(current))
 				invalidIDs.push_back(i);
 		}
 	}
