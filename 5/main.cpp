@@ -7,9 +7,10 @@
 #include <string_view>
 #include <unordered_set>
 #include <utility>
+#include <algorithm>
 
 
-static std::optional<std::vector<std::string>> ReadInputPart1(std::string_view file)
+static std::optional<std::vector<std::string>> ReadInput(std::string_view file)
 {
 	std::vector<std::string> result{};
 	result.reserve(1000);
@@ -33,12 +34,12 @@ static std::optional<std::vector<std::string>> ReadInputPart1(std::string_view f
 
 int main()
 {
-	auto input1 = ReadInputPart1("input.txt");
-	auto input2 = ReadInputPart1("input2.txt");
+	auto input1 = ReadInput("test_input.txt");
+	auto input2 = ReadInput("test_input2.txt");
 	if (!input1.has_value() || !input2.has_value())
 		return 1;
 
-	int result{};
+	uint64_t result{};
 
 	std::vector<uint64_t> numbers{};
 	numbers.reserve(1000);
@@ -69,19 +70,37 @@ int main()
 		ranges.emplace_back(start, end);
 	}
 
-	for (auto& pair : ranges)
-	{
-		for (int i = 0; i < numbers.size(); ++i)
+	std::sort(ranges.begin(), ranges.end(), [](std::pair<uint64_t, uint64_t>& a, std::pair<uint64_t, uint64_t>& b)
 		{
-			if (numbers[i] >= pair.first && numbers[i] <= pair.second)
-			{
-				result++;
-				std::cout << "Found: " << numbers[i] << " in range: " << pair.first << " - " << pair.second << "\n";
-				numbers[i] = -1;
-			}
+			return a.first < b.first;
+		});
+
+	std::vector<std::pair<uint64_t, uint64_t>> updatedRanges{};
+
+	auto current = ranges.front();
+
+	for (size_t i = 1; i < ranges.size(); ++i)
+	{
+		auto& next = ranges[i];
+		if (next.first <= current.second + 1)
+		{
+			current.second = std::max(current.second, next.second);
 		}
+		else
+		{
+			updatedRanges.push_back(current);
+			current = next;
+		}
+	}
+	updatedRanges.push_back(current);
+
+	result = 0;
+	for (auto& [start, end] : updatedRanges)
+	{
+		uint64_t diff = (end - start) + 1;
+		std::cout << "Numbers in range: " << start << " - " << end << " ---> " << diff << '\n';
+		result += diff;
 	}
 
 	std::cout << "Result: " << result << '\n';
-
 }
