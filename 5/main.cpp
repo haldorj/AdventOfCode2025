@@ -1,0 +1,87 @@
+#include <chrono>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <optional>
+#include <string_view>
+#include <unordered_set>
+#include <utility>
+
+
+static std::optional<std::vector<std::string>> ReadInputPart1(std::string_view file)
+{
+	std::vector<std::string> result{};
+	result.reserve(1000);
+
+	std::ifstream inputFile{ file.data() };
+	if (!inputFile.is_open())
+	{
+		std::cout << "Error: Unable to open file! \n";
+		return std::nullopt;
+	}
+
+	std::string line;
+	while (std::getline(inputFile, line))
+	{
+		result.push_back(line);
+	}
+
+	inputFile.close();
+	return result;
+}
+
+int main()
+{
+	auto input1 = ReadInputPart1("input.txt");
+	auto input2 = ReadInputPart1("input2.txt");
+	if (!input1.has_value() || !input2.has_value())
+		return 1;
+
+	int result{};
+
+	std::vector<uint64_t> numbers{};
+	numbers.reserve(1000);
+
+	for (auto& str : input2.value())
+	{
+		numbers.emplace_back(std::stoll(str));
+	}
+
+	std::vector<std::pair<uint64_t, uint64_t>> ranges{};
+	ranges.reserve(200);
+
+	for (auto& str : input1.value())
+	{
+		std::vector<std::string> rangeStr{};
+
+		std::stringstream stream(str);
+		std::string temp{};
+		while (std::getline(stream, temp, '-'))
+			rangeStr.push_back(temp);
+
+		if (rangeStr.front().empty() || rangeStr.back().empty())
+			continue;
+
+		const uint64_t start = std::stoull(rangeStr.front());
+		const uint64_t end = std::stoull(rangeStr.back());
+
+		ranges.emplace_back(start, end);
+	}
+
+	for (auto& pair : ranges)
+	{
+		for (int i = 0; i < numbers.size(); ++i)
+		{
+			if (numbers[i] >= pair.first && numbers[i] <= pair.second)
+			{
+				result++;
+				std::cout << "Found: " << numbers[i] << " in range: " << pair.first << " - " << pair.second << "\n";
+				numbers[i] = -1;
+			}
+		}
+	}
+
+	std::cout << "Result: " << result << '\n';
+
+}
