@@ -34,8 +34,8 @@ static std::optional<std::vector<std::string>> ReadInput(std::string_view file)
 
 int main()
 {
-	auto input1 = ReadInput("test_input.txt");
-	auto input2 = ReadInput("test_input2.txt");
+	auto input1 = ReadInput("input.txt");
+	auto input2 = ReadInput("input2.txt");
 	if (!input1.has_value() || !input2.has_value())
 		return 1;
 
@@ -45,9 +45,7 @@ int main()
 	numbers.reserve(1000);
 
 	for (auto& str : input2.value())
-	{
-		numbers.emplace_back(std::stoll(str));
-	}
+		numbers.emplace_back(std::stoull(std::move(str)));
 
 	std::vector<std::pair<uint64_t, uint64_t>> ranges{};
 	ranges.reserve(200);
@@ -55,9 +53,9 @@ int main()
 	for (auto& str : input1.value())
 	{
 		std::vector<std::string> rangeStr{};
-
-		std::stringstream stream(str);
+		std::stringstream stream(std::move(str));
 		std::string temp{};
+
 		while (std::getline(stream, temp, '-'))
 			rangeStr.push_back(temp);
 
@@ -70,6 +68,7 @@ int main()
 		ranges.emplace_back(start, end);
 	}
 
+	// sort in ascending order by the first value.
 	std::sort(ranges.begin(), ranges.end(), [](std::pair<uint64_t, uint64_t>& a, std::pair<uint64_t, uint64_t>& b)
 		{
 			return a.first < b.first;
@@ -77,11 +76,14 @@ int main()
 
 	std::vector<std::pair<uint64_t, uint64_t>> updatedRanges{};
 
-	auto current = ranges.front();
-
+	auto& current = ranges.front();
 	for (size_t i = 1; i < ranges.size(); ++i)
 	{
 		auto& next = ranges[i];
+		// We add +1 to confirm that the ranges can be merged.
+		// Example:	current = [3, 8 + 1], next=[9, 11]. 
+		// We can merge because 8 + 1 = 9 = next.first.
+		// result:	current = [3, 11]
 		if (next.first <= current.second + 1)
 		{
 			current.second = std::max(current.second, next.second);
