@@ -32,7 +32,7 @@ static std::optional<std::vector<std::string>> ReadInput(std::string_view file)
 	return result;
 }
 
-void Part1()
+static void Part1()
 {
 	auto input = ReadInput("input.txt");
 	if (!input.has_value())
@@ -103,7 +103,7 @@ void Part1()
 	std::cout << "Total: " << total << '\n';
 }
 
-void Part2()
+static void Part2()
 {
 	auto input = ReadInput("input.txt");
 	if (!input.has_value())
@@ -112,56 +112,57 @@ void Part2()
 	std::vector<std::vector<int>> numbers{};
 	std::vector<std::pair<char, int>> operators{};
 
-	for (int i = 0; i < input.value().size() - 1; ++i)
+	auto& inputRef = input.value();
+
+	for (int i = 0; i < inputRef.size() - 1; ++i)
 	{
 		std::vector<int> tempContainer;
-		for (int j = input.value()[i].size() - 1; j >= 0; --j)
+		for (int j = inputRef[i].size() - 1; j >= 0; --j)
 		{
-			if (input.value()[i][j] == ' ')
+			if (inputRef[i][j] == ' ')
 			{
 				tempContainer.push_back(0);
 				continue;
 			}
 
-			tempContainer.push_back(input.value()[i][j] -'0');
+			tempContainer.push_back(inputRef[i][j] -'0');
 		}
 		numbers.emplace_back(tempContainer);
 	}
 
-	const auto& operatorStr = input.value().back();
+	const auto& operatorStr = inputRef.back();
 
 	int count = 1;
-	for (int index = operatorStr.size() - 1; index >= 0; --index)
+	for (int i = operatorStr.size() - 1; i >= 0; --i)
 	{
-		if (operatorStr[index] == ' ')
+		if (operatorStr[i] == ' ')
 		{
 			count++;
 			continue;
 		}
 
-		operators.emplace_back(operatorStr[index], count);
+		operators.emplace_back(operatorStr[i], count);
 		count = 0;
 	}
 
-	size_t largest = 0;
-	largest = std::max(largest, operators.size());
 	std::vector<uint64_t> results{};
-	results.reserve(largest);
+	results.reserve(operators.size());
 
 	int current = 0;
-	for (auto& [op, range] : operators)
+	for (const auto& [op, range] : operators)
 	{
-		int64_t result = 0;
+		uint64_t result = 0;
 		for (int i = current; i < current + range; ++i)
 		{
-			int digit = input.value().size() - 1;
+			// Subtract 1, last row are the exponents.
+			int exp = inputRef.size() - 1;
 			int total = 0;
 			for (auto& n : numbers)
 			{
-				int exp = static_cast<int>(std::pow(10, digit - 1));
-				total = total + (n[i] * exp);
+				int multiplier = static_cast<int>(std::pow(10, exp - 1));
+				total = total + (n[i] * multiplier);
 				std::cout << n[i] << ' ';
-				digit--;
+				exp--;
 			}
 			
 			while (total % 10 == 0)
@@ -187,13 +188,13 @@ void Part2()
 		std::cout << '\n';
 	}
 	
-	int64_t grandTotal = 0;
-	for (auto& r : results)
+	uint64_t grandTotal = 0;
+	for (const auto& r : results)
 	{
 		std::cout << r << '\n';
 		grandTotal += r;
 	}
-	std::cout << "Grand Total: " << grandTotal << '\n';
+	std::cout << '\n' << "Grand Total: " << grandTotal << '\n';
 }
 
 int main()
