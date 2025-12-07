@@ -146,7 +146,7 @@ void Part2()
 	size_t largest = 0;
 	largest = std::max(largest, operators.size());
 	std::vector<uint64_t> results{};
-	results.resize(largest, 0);
+	results.reserve(largest);
 
 	int current = 0;
 	for (auto& [op, range] : operators)
