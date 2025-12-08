@@ -133,7 +133,7 @@ static void Part2()
 	const auto& operatorStr = inputRef.back();
 
 	int count = 1;
-	for (int i = operatorStr.size() - 1; i >= 0; --i)
+	for (size_t i = operatorStr.size() - 1; i >= 0; --i)
 	{
 		if (operatorStr[i] == ' ')
 		{
@@ -154,10 +154,10 @@ static void Part2()
 		uint64_t result = 0;
 		for (int i = current; i < current + range; ++i)
 		{
-			// Subtract 1, last row are the exponents.
+			// Subtract 1, last row are the operators.
 			int exp = inputRef.size() - 1;
 			int total = 0;
-			for (auto& n : numbers)
+			for (const auto& n : numbers)
 			{
 				int multiplier = static_cast<int>(std::pow(10, exp - 1));
 				total = total + (n[i] * multiplier);
